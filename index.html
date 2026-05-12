@@ -221,14 +221,13 @@ function gridAxes(w,h,stepX,stepY,ticksX,ticksY,ymin,ymax){
     s+=`<line x1="${x}" y1="${cy-3}" x2="${x}" y2="${cy+3}" stroke="#2a2620" stroke-width="1"/>`;
     s+=`<text x="${x}" y="${cy+13}" text-anchor="middle" font-size="8" fill="#9a9080" font-family="IBM Plex Mono">${i}</text>`;
   }
-  // ticks y
-  const yStep=(ymax-ymin)/(ticksY*2);
-  for(let v=ymin;v<=ymax;v+=yStep){
-    if(Math.abs(v)<0.01)continue;
+  // ticks y — always integer steps
+  for(let v=Math.ceil(ymin);v<=Math.floor(ymax);v++){
+    if(v===0)continue;
     const yp=ty(v,cy,stepY);
     if(yp<5||yp>h-5)continue;
     s+=`<line x1="${cx-3}" y1="${yp}" x2="${cx+3}" y2="${yp}" stroke="#2a2620" stroke-width="1"/>`;
-    s+=`<text x="${cx-6}" y="${yp+3}" text-anchor="end" font-size="8" fill="#9a9080" font-family="IBM Plex Mono">${Math.round(v*10)/10}</text>`;
+    s+=`<text x="${cx-6}" y="${yp+3}" text-anchor="end" font-size="8" fill="#9a9080" font-family="IBM Plex Mono">${v}</text>`;
   }
   s+=`<text x="${cx+7}" y="13" font-size="9" fill="#2a2620" font-family="DM Sans" font-weight="600">y</text>`;
   s+=`<text x="${w-10}" y="${cy-6}" font-size="9" fill="#2a2620" font-family="DM Sans" font-weight="600">x</text>`;
@@ -677,7 +676,7 @@ function buildSlides(){
       <button class="toc-btn" onclick="goSlideById('l2p1')"><span class="toc-icon">✏️</span><div><span class="toc-tag">Period 1 · Whiteboard</span>Level 2 Problems (6)</div></button>
       <button class="toc-btn" onclick="goSlideById('hw1')"><span class="toc-icon">📓</span><div><span class="toc-tag">Period 1 · Homework</span>Night 1</div></button>
       <button class="toc-btn" onclick="goSlideById('p2-div')"><span class="toc-icon">📊</span><div><span class="toc-tag">Period 2</span>Transforming from a Graph</div></button>
-      <button class="toc-btn" onclick="goSlideById('l3p1')"><span class="toc-icon">✏️</span><div><span class="toc-tag">Period 2 · Whiteboard</span>Level 3 Problems (5)</div></button>
+      <button class="toc-btn" onclick="goSlideById('l3-intro')"><span class="toc-icon">📓</span><div><span class="toc-tag">Period 2 · Notes Activity</span>Layered Transformations (f→g→h→j→k→synthesis)</div></button>
       <button class="toc-btn" onclick="goSlideById('hw2')"><span class="toc-icon">📓</span><div><span class="toc-tag">Period 2 · Homework</span>Night 2</div></button>
       <button class="toc-btn" onclick="goSlideById('p3-div')"><span class="toc-icon">⚡</span><div><span class="toc-tag">Period 3</span>Scaling, Reflection & Deeper Problems</div></button>
       <button class="toc-btn" onclick="goSlideById('p3-type1-intro')"><span class="toc-icon">📈</span><div><span class="toc-tag">Period 3 · Mini-lessons</span>Type 1 → Practice · Type 2 → Practice · Type 3 → Practice</div></button>
@@ -832,7 +831,7 @@ function buildSlides(){
         <div class="hw-p"><span class="plbl">A)</span>On the same axes, graph both f(x) and g(x). Label each curve with its equation. Mark the vertex of each function with a dot and its coordinates.</div>
         <div class="hw-p"><span class="plbl">B)</span>What transformation maps f to g? Name it and describe it precisely.</div>
         <div class="hw-p"><span class="plbl">C)</span>The point (3, 7) is on f. What corresponding point is on g? Show your reasoning step by step.</div>
-        <div class="hw-p"><span class="plbl">D)</span>Pick one to respond to: <em>What would happen if the transformation were g(x) = (x−1)² + 3 instead?</em> — OR — <em>Can you write a different g(x) that would shift the vertex to (1, 0)? Show your reasoning.</em> — OR — write a genuine question you have.</div>
+        <div class="hw-p"><span class="plbl">D)</span>If h(x) = (x − 2)² − 1, how does h compare to g? What transformation maps g to h? Sketch both on the same axes and explain. — OR — <em>Can you write a different g(x) that would shift the vertex to (1, 0)? Show your reasoning.</em> — OR — write a genuine question you have.</div>
       </div>
       <div class="hw-note">Bring your notebook tomorrow — we'll start with your questions.</div>
     </div>
@@ -847,7 +846,7 @@ function buildSlides(){
     <div class="pd-sub">If you can read a graph and trace a point, you can transform any function.</div>
   </div>`);
 
-  initReveal('p2-intro',3);
+  initReveal('p2-intro',4);
   add('p2-intro','lesson','P2',`<div class="slide lesson-slide" data-id="p2-intro">
     <div class="period-tag">Period 2 — Transforming from a Graph</div>
     <div class="slide-title">The coordinate rules</div>
@@ -866,7 +865,20 @@ function buildSlides(){
           <tr><td>Vertical stretch/compress</td><td>k·f(x)</td><td>(x, y) → (x, ky)</td></tr>
         </table>`)}
         ${rc('p2-intro',2,`<div class="warn-box">Horizontal: the sign is <strong>counterintuitive</strong> — f(x−2) shifts RIGHT.<br>Vertical: the sign is <strong>direct</strong> — f(x)+3 shifts UP 3.</div>`)}
-        <button class="next-btn" id="rnext-p2-intro" onclick="advanceReveal('p2-intro')" style="align-self:flex-start">Show next → (3 remaining)</button>
+        ${rc('p2-intro',3,`<div style="background:var(--amber-l);border:2px solid var(--amber);border-radius:9px;padding:.85rem 1.1rem">
+          <div style="font-family:var(--mono);font-size:12px;font-weight:700;color:var(--amber);letter-spacing:.06em;text-transform:uppercase;margin-bottom:.5rem">Order of transformations</div>
+          <div style="font-size:15px;color:var(--ink);line-height:1.7">When combining transformations, always apply in this order:<br>
+            <span style="display:inline-flex;align-items:center;gap:.5rem;margin-top:.4rem;flex-wrap:wrap">
+              <span style="font-family:var(--mono);font-weight:700;background:var(--rose-l);color:var(--rose);padding:3px 10px;border-radius:5px">① Reflect &amp; stretch/compress</span>
+              <span style="color:var(--ink3)">→</span>
+              <span style="font-family:var(--mono);font-weight:700;background:var(--slate-l);color:var(--slate);padding:3px 10px;border-radius:5px">② Horizontal shift</span>
+              <span style="color:var(--ink3)">→</span>
+              <span style="font-family:var(--mono);font-weight:700;background:var(--teal-l);color:var(--teal);padding:3px 10px;border-radius:5px">③ Vertical shift</span>
+            </span>
+          </div>
+          <div style="font-size:13px;color:var(--ink3);margin-top:.6rem;border-left:2px solid var(--amber);padding-left:.7rem">Why? Stretch/reflect first keeps the anchor point at the origin — then you translate it exactly once to its final position. Each step is simple; the sequence is what matters.</div>
+        </div>`)}
+        <button class="next-btn" id="rnext-p2-intro" onclick="advanceReveal('p2-intro')" style="align-self:flex-start">Show next → (4 remaining)</button>
       </div>
       <div style="display:flex;flex-direction:column;align-items:center;gap:.5rem">
         <div style="font-family:var(--mono);font-size:11px;color:var(--ink3)">f(x) — three labeled points</div>
@@ -876,53 +888,372 @@ function buildSlides(){
     </div>
   </div>`);
 
-  const PTS3=['(−2, 1)','(0, −3)','(2, 1)','(3, 6)'];
-  const l3data=[
-    {id:'l3p1',g:'g(x) = f(x) + 3',col:PROB_COLORS[0],
-     prompts:['What do you notice happens to each labeled point? What stays the same, what changes?','Trace all four points through this transformation. Make a table: f point → g point.','Is there a pattern to all four transformations? What is the same about all of them?'],
-     answer:`<strong>A)</strong> x-coordinate stays the same; y increases by 3 for every point.<br><strong>B)</strong> (−2,1)→<span class="c">(−2,4)</span> · (0,−3)→<span class="c">(0,0)</span> · (2,1)→<span class="c">(2,4)</span> · (3,6)→<span class="c">(3,9)</span><br><strong>C)</strong> All four follow the same rule: add 3 to y. It's a vertical shift up 3.`},
-    {id:'l3p2',g:'g(x) = f(x − 2)',col:PROB_COLORS[1],
-     prompts:['Before you calculate: which direction do you predict the graph shifts? Why?','Trace each point. What input does f actually receive when you evaluate g(x)?','Were you right about the direction? Explain the "counterintuitive" result in your own words.'],
-     answer:`<strong>A)</strong> The graph shifts RIGHT — counterintuitive because we subtract 2 from input.<br><strong>B)</strong> (−2,1)→<span class="c">(0,1)</span> · (0,−3)→<span class="c">(2,−3)</span> · (2,1)→<span class="c">(4,1)</span> · (3,6)→<span class="c">(5,6)</span><br><strong>C)</strong> To get y at a new x, f receives x−2. So the old x=0 output appears at the new x=2.`},
-    {id:'l3p3',g:'g(x) = −f(x)',col:PROB_COLORS[2],
-     prompts:['What happened to the outputs? What stayed exactly the same?','Where does the vertex (0,−3) land? What does it become?','What points on f would NOT move under this transformation — and why?'],
-     answer:`<strong>A)</strong> Outputs are negated — x unchanged, y flipped.<br><strong>B)</strong> (0,−3)→<span class="c">(0,3)</span> — note the minimum becomes the maximum!<br><strong>C)</strong> A point with y=0 satisfies −(0)=0, so x-intercepts never move.`},
-    {id:'l3p4',g:'g(x) = 2f(x)',col:PROB_COLORS[3],
-     prompts:['Predict what happens to each point. Make a table before calculating.','What happens to a point that has y = 0 — like if one of our labeled points were on the x-axis?','How is this different from a vertical shift? How is it similar?'],
-     answer:`<strong>A)</strong> Every y-value doubles; x stays the same.<br><strong>B)</strong> A y=0 point stays at 0 (2×0=0) — x-intercepts don't move.<br><strong>C)</strong> Unlike a shift, this multiplies. Points far from x-axis move most.`},
-    {id:'l3p5',g:'g(x) = −f(x − 2) + 3',col:PROB_COLORS[4],
-     prompts:['Work one transformation at a time. What order would you apply them?','Trace all four labeled points completely through every transformation.','Does the order matter? Try reflection first, then shift — do you get the same result?'],
-     answer:`<strong>A)</strong> Apply: shift right 2 (input), then reflect (output), then shift up 3 (output).<br><strong>B)</strong> (−2,1)→<span class="c">(0,2)</span> · (0,−3)→<span class="c">(2,6)</span> · (2,1)→<span class="c">(4,2)</span> · (3,6)→<span class="c">(5,−3)</span><br><strong>C)</strong> Vertical operations can be reordered; horizontal shift is always about the input — do it first.`},
-  ];
+  // ── DAY 2: LAYERED NOTES ACTIVITY ──────────────────────────────────────────
+  // Chain-based, one transformation per slide, step-by-step reveals
 
-  l3data.forEach((p,i)=>{
-    const a=aid();
-    add(p.id,'problem','P2',`<div class="slide problem-slide" data-id="${p.id}">
-      <div class="period-tag">Period 2 — Graph Problem ${i+1} of 5</div>
-      <div class="prob-layout two">
-        <div style="display:flex;flex-direction:column;gap:.75rem">
-          <div class="fn-card">
-            <div class="fn-lbl">f(x) — use the graph</div>
-            <div class="fn-pts" style="margin-bottom:.5rem">${PTS3.map(pt=>`<span class="fn-pt hi">${pt}</span>`).join('')}</div>
-            <div class="plane-wrap">${stdPlane(240,210,-4,7,(cx,cy,sx,sy)=>gMystery(cx,cy,sx,sy,'#2a4a7f','f(x)',true))}</div>
+  const FC={f:'#2a4a7f',g:'#2d6a2d',h:'#b03a5b',j:'#c45a0e',k:'#6b3fa0'};
+
+  // f(x) = x²-3 values at key inputs
+  const FV={'-3':6,'-2':1,'-1':-2,'0':-3,'1':-2,'2':1,'3':6};
+
+  // Plane builder for these slides — x:-5..5, y:-8..8, integer labels
+  function notesPlane(w,h,fns){
+    const sx=w/12, cx=w/2;
+    const ylo=-8,yhi=8,sy=h/(yhi-ylo),cy=h*(yhi)/(yhi-ylo);
+    const TX=(x)=>cx+x*sx, TY=(y)=>cy-y*sy;
+    let s='';
+    for(let xi=-5;xi<=5;xi++){const px=TX(xi).toFixed(1);s+=`<line x1="${px}" y1="0" x2="${px}" y2="${h}" stroke="#ede8dc" stroke-width=".5"/>`;}
+    for(let yi=ylo;yi<=yhi;yi++){const py=TY(yi).toFixed(1);s+=`<line x1="0" y1="${py}" x2="${w}" y2="${py}" stroke="#ede8dc" stroke-width=".5"/>`;}
+    const ax=TX(0).toFixed(1),ay=TY(0).toFixed(1);
+    s+=`<line x1="${ax}" y1="3" x2="${ax}" y2="${h-3}" stroke="#2a2620" stroke-width="1.5"/>`;
+    s+=`<line x1="3" y1="${ay}" x2="${w-3}" y2="${ay}" stroke="#2a2620" stroke-width="1.5"/>`;
+    s+=`<polygon points="${ax},2 ${+ax-4},10 ${+ax+4},10" fill="#2a2620"/>`;
+    s+=`<polygon points="${ax},${h-2} ${+ax-4},${h-10} ${+ax+4},${h-10}" fill="#2a2620"/>`;
+    s+=`<polygon points="${w-2},${ay} ${w-10},${+ay-4} ${w-10},${+ay+4}" fill="#2a2620"/>`;
+    s+=`<polygon points="2,${ay} 10,${+ay-4} 10,${+ay+4}" fill="#2a2620"/>`;
+    for(let xi=-4;xi<=4;xi++){if(!xi)continue;const px=TX(xi).toFixed(1);s+=`<line x1="${px}" y1="${+ay-3}" x2="${px}" y2="${+ay+3}" stroke="#2a2620" stroke-width="1"/><text x="${px}" y="${+ay+13}" text-anchor="middle" font-size="8" fill="#9a9080" font-family="IBM Plex Mono">${xi}</text>`;}
+    for(let yi=ylo;yi<=yhi;yi+=2){if(!yi)continue;const py=TY(yi).toFixed(1);if(+py<5||+py>h-5)continue;s+=`<line x1="${+ax-3}" y1="${py}" x2="${+ax+3}" y2="${py}" stroke="#2a2620" stroke-width="1"/><text x="${+ax-5}" y="${+py+3}" text-anchor="end" font-size="8" fill="#9a9080" font-family="IBM Plex Mono">${yi}</text>`;}
+    s+=`<text x="${+ax+5}" y="12" font-size="9" fill="#2a2620" font-family="DM Sans" font-weight="600">y</text>`;
+    s+=`<text x="${w-9}" y="${+ay-5}" font-size="9" fill="#2a2620" font-family="DM Sans" font-weight="600">x</text>`;
+    fns.forEach(({yfn,col,label,dashed,dots})=>{
+      const pts=[];
+      for(let x=-5.3;x<=5.3;x+=0.04){const y=yfn(x);if(y>=ylo-0.1&&y<=yhi+0.1)pts.push([x,y]);}
+      if(pts.length>=2){
+        const d=pts.map(([x,y],i)=>(i?'L':'M')+TX(x).toFixed(1)+','+TY(y).toFixed(1)).join(' ');
+        s+=`<path d="${d}" stroke="${col}" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"${dashed?' stroke-dasharray="7,4"':''}/>`;
+        const[l0,l1]=pts[0],[l2,l3]=pts[1],[r0,r1]=pts[pts.length-1],[r2,r3]=pts[pts.length-2];
+        const dxL=TX(l0)-TX(l2),dyL=TY(l1)-TY(l3),LL=Math.sqrt(dxL*dxL+dyL*dyL)||1;
+        const dxR=TX(r0)-TX(r2),dyR=TY(r1)-TY(r3),LR=Math.sqrt(dxR*dxR+dyR*dyR)||1;
+        s+=`<polygon points="${(TX(l0)+dxL/LL*9).toFixed(1)},${(TY(l1)+dyL/LL*9).toFixed(1)} ${(TX(l0)-dyL/LL*4).toFixed(1)},${(TY(l1)+dxL/LL*4).toFixed(1)} ${(TX(l0)+dyL/LL*4).toFixed(1)},${(TY(l1)-dxL/LL*4).toFixed(1)}" fill="${col}"/>`;
+        s+=`<polygon points="${(TX(r0)+dxR/LR*9).toFixed(1)},${(TY(r1)+dyR/LR*9).toFixed(1)} ${(TX(r0)-dyR/LR*4).toFixed(1)},${(TY(r1)+dxR/LR*4).toFixed(1)} ${(TX(r0)+dyR/LR*4).toFixed(1)},${(TY(r1)-dxR/LR*4).toFixed(1)}" fill="${col}"/>`;
+      }
+      if(label&&pts.length){
+        const ep=pts[pts.length-1];
+        const ff='font-size="10" font-family="IBM Plex Mono" font-weight="700" text-anchor="start"';
+        s+=`<text x="${(TX(ep[0])+5).toFixed(1)}" y="${(TY(ep[1])-5).toFixed(1)}" ${ff} fill="white" stroke="white" stroke-width="5" paint-order="stroke">${label}</text>`;
+        s+=`<text x="${(TX(ep[0])+5).toFixed(1)}" y="${(TY(ep[1])-5).toFixed(1)}" ${ff} fill="${col}">${label}</text>`;
+      }
+      // draw dashed line between highlighted (* prefix) dots first
+      const hlPts=[];
+      if(dots) dots.forEach(([x,y,lbl])=>{ if(lbl.startsWith('*')) hlPts.push([TX(x),TY(y)]); });
+      if(hlPts.length===2){
+        s+=`<line x1="${hlPts[0][0].toFixed(1)}" y1="${hlPts[0][1].toFixed(1)}" x2="${hlPts[1][0].toFixed(1)}" y2="${hlPts[1][1].toFixed(1)}" stroke="#6b3fa0" stroke-width="2" stroke-dasharray="6,4" opacity="0.8"/>`;
+      }
+      if(dots)(dots).forEach(([x,y,lbl,ox,oy,anc])=>{
+        const isHL=lbl.startsWith('*');
+        const cleanLbl=isHL?lbl.slice(1).trim():lbl;
+        const dotCol=isHL?'#6b3fa0':col;
+        const r=isHL?7:4;
+        const px=TX(x).toFixed(1),py=TY(y).toFixed(1);
+        if(isHL) s+=`<circle cx="${px}" cy="${py}" r="13" fill="#6b3fa0" opacity="0.1"/>`;
+        s+=`<circle cx="${px}" cy="${py}" r="${r}" fill="${dotCol}" stroke="white" stroke-width="2.5"/>`;
+        const fa=`font-size="${isHL?12:9}" font-family="IBM Plex Mono" font-weight="${isHL?700:600}" text-anchor="${anc||'start'}"`;
+        s+=`<text x="${(TX(x)+ox).toFixed(1)}" y="${(TY(y)+oy).toFixed(1)}" ${fa} fill="white" stroke="white" stroke-width="4" paint-order="stroke">${cleanLbl}</text>`;
+        s+=`<text x="${(TX(x)+ox).toFixed(1)}" y="${(TY(y)+oy).toFixed(1)}" ${fa} fill="${dotCol}">${cleanLbl}</text>`;
+      });
+    });
+    return `<svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" xmlns="http://www.w3.org/2000/svg" style="display:block"><rect width="${w}" height="${h}" fill="white"/>${s}</svg>`;
+  }
+
+  // CSS helper for chain steps
+  function chainStep(label,content,col){
+    return `<div style="display:flex;align-items:flex-start;gap:.7rem;padding:.6rem .85rem;background:white;border:1.5px solid ${col}33;border-left:5px solid ${col};border-radius:0 8px 8px 0;margin-bottom:.3rem">
+      <span style="font-family:var(--mono);font-size:14px;font-weight:700;color:${col};flex-shrink:0;margin-top:3px;width:90px;line-height:1.3">${label}</span>
+      <span style="font-family:var(--mono);font-size:20px;color:var(--ink);line-height:1.5">${content}</span>
+    </div>`;
+  }
+
+  // Table row helper
+  function trow(cells,highlight){
+    return `<tr>${cells.map((c,i)=>`<td style="${highlight&&i===highlight?'background:var(--teal-l);font-weight:700;color:var(--teal)':''}font-family:var(--mono);font-size:13px;padding:5px 10px;border:1px solid var(--rule2)">${c}</td>`).join('')}</tr>`;
+  }
+
+  const PW=290,PH=320;
+  const fDots=[[-2,1,'(−2,1)',-42,-8,'start'],[0,-3,'(0,−3)',6,13,'start'],[2,1,'(2,1)',6,-8,'start'],[3,6,'(3,6)',6,-8,'start']];
+  const fFn={yfn:x=>x*x-3,col:FC.f,label:'f(x)',dots:fDots};
+
+  // ── SLIDE 0: Setup — f(x) ─────────────────────────────────────────────
+  initReveal('l3-intro',7);
+  add('l3-intro','problem','P2',`<div class="slide lesson-slide" data-id="l3-intro">
+    <div class="period-tag">Period 2 — Notes: The Anchor Function</div>
+    <div class="slide-title" style="font-size:24px;margin-bottom:.6rem">f(x) = x² − 3</div>
+    <div class="prob-layout two" style="max-width:960px">
+      <div style="display:flex;flex-direction:column;gap:.75rem">
+        <div class="fn-card" style="border-top:3px solid ${FC.f}">
+          <div class="fn-lbl">Every ordered pair is one <em>instance</em> of f</div>
+          <div style="display:flex;gap:.5rem;flex-wrap:wrap;margin-top:.4rem">
+            ${[[-2,1],[-1,-2],[0,-3],[1,-2],[2,1],[3,6]].map(([x,y])=>`<span style="font-family:var(--mono);font-size:13px;background:var(--paper);border:1px solid var(--rule2);border-radius:4px;padding:3px 8px"><span style="color:${FC.f}">${x}</span> → <span style="color:var(--teal)">${y}</span></span>`).join('')}
           </div>
-          <div class="fn-card" style="border-top:3px solid ${p.col.col}">
-            <div class="fn-lbl">Transformation</div>
-            <div class="fn-eq" style="color:${p.col.col}">${p.g}</div>
-          </div>
+          <div style="font-size:12px;color:var(--ink3);margin-top:.5rem;font-style:italic">The graph shows ALL instances at once.</div>
         </div>
-        <div style="display:flex;flex-direction:column;gap:.7rem">
-          <div class="sketch-note">📐 On your board: sketch f(x) using the labeled points, then sketch g(x). Then answer A, B, and C.</div>
-          <div class="prompt-card">
-            <div class="prompt-lbl">Think about it</div>
-            ${p.prompts.map((q,qi)=>`<div class="prompt-q"><span class="qlbl">${String.fromCharCode(65+qi)})</span>${q}</div>`).join('')}
-          </div>
-          <div class="ans-box" id="${a}"><div class="ans-lbl">Answer</div><div class="ans-text">${p.answer}</div></div>
-          <button class="rev-btn ans" onclick="showAns('${a}')">Show answer ▶</button>
+        <div style="display:flex;align-items:center;justify-content:center">
+          <div class="plane-wrap">${notesPlane(360,400,[fFn])}</div>
+        </div>
+        <div style="display:flex;align-items:center;justify-content:center">
+          <button class="next-btn" id="rnext-l3-intro" onclick="advanceReveal('l3-intro')">Show next →</button>
         </div>
       </div>
-    </div>`);
-  });
+      <div style="display:flex;flex-direction:column;gap:.65rem">
+        ${rc('l3-intro',0,`<div class="concept-box" style="font-size:14px">📓 In your notes: draw axes from −8 to 8. Graph f(x) in <strong style="color:${FC.f}">blue</strong>. Label at least four ordered pairs on the curve.</div>`,false)}
+        ${rc('l3-intro',1,`<div style="background:var(--slate-l);border-left:4px solid var(--slate);border-radius:0 8px 8px 0;padding:.65rem .9rem"><div class="fn-lbl" style="color:var(--slate)">A) What is the vertex of f? What does it tell you?</div></div>`)}
+        ${rc('l3-intro',2,`<div style="background:white;border:1.5px solid var(--rule2);border-radius:8px;padding:.6rem .9rem;margin-top:-.3rem"><div class="ans-text" style="font-size:13px;color:var(--ink3)">Vertex <span style="font-family:var(--mono);color:var(--teal)">(0,−3)</span> — the minimum output. Every other x gives a larger y. Axis of symmetry is x = 0.</div></div>`)}
+        ${rc('l3-intro',3,`<div style="background:var(--slate-l);border-left:4px solid var(--slate);border-radius:0 8px 8px 0;padding:.65rem .9rem"><div class="fn-lbl" style="color:var(--slate)">B) What are the x-intercepts? How do you find them?</div></div>`)}
+        ${rc('l3-intro',4,`<div style="background:white;border:1.5px solid var(--rule2);border-radius:8px;padding:.6rem .9rem;margin-top:-.3rem"><div class="ans-text" style="font-size:13px;color:var(--ink3)">Set f(x)=0: x²−3=0 → x=±√3 ≈ ±1.73. The graph crosses the x-axis twice.</div></div>`)}
+        ${rc('l3-intro',5,`<div style="background:var(--slate-l);border-left:4px solid var(--slate);border-radius:0 8px 8px 0;padding:.65rem .9rem"><div class="fn-lbl" style="color:var(--slate)">C) Domain and range of f?</div></div>`)}
+        ${rc('l3-intro',6,`<div style="background:white;border:1.5px solid var(--rule2);border-radius:8px;padding:.6rem .9rem;margin-top:-.3rem"><div class="ans-text" style="font-size:13px;color:var(--ink3)">Domain: <span style="font-family:var(--mono);color:var(--teal)">all reals</span>. Range: <span style="font-family:var(--mono);color:var(--teal)">y ≥ −3</span>. Parabola extends forever; lowest point is the vertex.</div></div>`)}
+      </div>
+    </div>
+  </div>`);
+
+  add('consider-g','lesson','P2',`<div class="slide lesson-slide" data-id="consider-g">
+    <div class="period-tag">Period 2 — Transformation 1</div>
+    <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1.6rem;width:100%;max-width:820px;text-align:center">
+      <div style="display:flex;flex-direction:column;gap:.6rem;align-items:center">
+        <div style="font-family:var(--mono);font-size:26px;font-weight:600;color:var(--ink2)">You know that &nbsp;<span style="color:var(--slate);font-weight:700">f(x) = x² − 3</span></div><div style="font-family:var(--mono);font-size:28px;font-weight:700;color:var(--ink)">Now consider &nbsp;<span style="color:${FC.g};font-weight:700">g(x) = f(x) + 4</span></div>
+      </div>
+      <div style="font-family:var(--serif);font-size:clamp(32px,4.5vw,54px);font-weight:700;color:var(--ink);line-height:1.2">How does g(x) relate to f(x)?</div>
+      <div style="font-size:20px;color:var(--ink3);font-weight:500">📓 Write both in your notes. What do you think changes?</div>
+    </div>
+  </div>`);
+
+  // ── SLIDE 1: g(x) = f(x)+4 ────────────────────────────────────────────
+  initReveal('l3-g',10);
+  add('l3-g','problem','P2',`<div class="slide lesson-slide" data-id="l3-g" style="padding:.8rem 1.2rem">
+    <div class="period-tag">Period 2 — Transformation 1: Vertical Shift</div>
+    <div style="background:var(--teal-l);border:2px solid var(--teal);border-radius:10px;padding:.55rem 1.1rem;text-align:center;width:100%;max-width:1100px;margin-bottom:.4rem">
+      <div style="font-family:var(--mono);font-size:13px;font-weight:700;color:var(--teal);letter-spacing:.1em;text-transform:uppercase;margin-bottom:.2rem">Strategy: Test One Instance to Discover the Rule</div>
+      <div style="font-size:20px;font-weight:700;color:var(--teal)">Let's find g(2) and compare it to f(2). One point will reveal the whole transformation.</div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1.1fr;gap:1.2rem;width:100%;max-width:1100px;align-items:start">
+      <div style="display:flex;flex-direction:column;gap:.4rem">
+        <button class="next-btn" id="rnext-l3-g" onclick="advanceReveal('l3-g')" style="align-self:flex-start;margin-bottom:.2rem">Show next →</button>
+        ${rc('l3-g',0,`<div style="background:var(--paper);border:1.5px solid var(--rule2);border-radius:8px;padding:.55rem .85rem"><div style="font-size:17px;font-weight:700;color:var(--ink)">Let's find g(2):</div><div style="font-size:22px;color:var(--ink);font-family:var(--mono);font-weight:700;margin-top:4px">g(2) = f(2) + 4 = ?</div></div>`,false)}
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:.5rem;align-items:start">
+          <div style="display:flex;flex-direction:column;gap:.3rem">
+            <div class="fn-card" style="border-top:3px solid ${FC.f}"><div class="fn-eq" style="color:${FC.f};font-size:17px">f(x) = x² − 3</div></div>
+        ${rc('l3-g',1,chainStep('f(2) = ?','2²−3 = 4−3 = <strong>1</strong>',FC.f))}
+          </div>
+          <div style="display:flex;flex-direction:column;gap:.3rem">
+            <div class="fn-card" style="border-top:3px solid ${FC.g}"><div class="fn-eq" style="color:${FC.g};font-size:17px">g(x) = f(x) + 4</div></div>
+        ${rc('l3-g',2,chainStep('g(2) =','f(2) + 4 = 1 + 4 = <strong>5</strong>',FC.g))}
+        ${rc('l3-g',3,chainStep('point on g:','<strong>(2, 5)</strong>',FC.g))}
+          </div>
+        </div>
+      ${rc('l3-g',4,`<div style="background:var(--slate-l);border-left:4px solid var(--slate);border-radius:0 8px 8px 0;padding:.45rem .85rem"><div style="font-size:18px;font-weight:700;color:var(--slate)">Where was this point on f?</div></div>`)}
+      ${rc('l3-g',5,`<div style="background:white;border:1.5px solid var(--rule2);border-radius:8px;padding:.45rem .85rem;margin-top:-.2rem"><div style="font-family:var(--mono);font-size:14px;color:var(--ink3);line-height:1.7">f had <span style="color:${FC.f};font-weight:700">(2, 1)</span>. g has <span style="color:${FC.g};font-weight:700">(2, 5)</span>.<br>Same x, y went up 4. That IS the transformation.</div></div>`)}
+      ${rc('l3-g',6,`<div style="background:white;border:1.5px solid var(--rule2);border-radius:8px;padding:.45rem .85rem"><div class="fn-lbl">Three instances</div><table style="border-collapse:collapse;width:100%"><tr><th style="font-family:var(--mono);font-size:11px;padding:4px 8px;border:1px solid var(--rule2);background:var(--paper)">x</th><th style="font-family:var(--mono);font-size:11px;padding:4px 8px;border:1px solid var(--rule2);background:var(--paper);color:${FC.f}">f(x)</th><th style="font-family:var(--mono);font-size:11px;padding:4px 8px;border:1px solid var(--rule2);background:var(--paper);color:${FC.g}">g(x)=f(x)+4</th><th style="font-family:var(--mono);font-size:11px;padding:4px 8px;border:1px solid var(--rule2);background:var(--paper)">point on g</th></tr>${[[-2,1,5,"(−2,5)"],[0,-3,1,"(0,1)"],[2,1,5,"(2,5)"]].map(([x,fx,gx,pt])=>`<tr><td style="font-family:var(--mono);font-size:13px;padding:4px 8px;border:1px solid var(--rule2);text-align:center">${x}</td><td style="font-family:var(--mono);font-size:13px;padding:4px 8px;border:1px solid var(--rule2);text-align:center;color:${FC.f}">${fx}</td><td style="font-family:var(--mono);font-size:13px;padding:4px 8px;border:1px solid var(--rule2);text-align:center;color:${FC.g}">${gx}</td><td style="font-family:var(--mono);font-size:13px;padding:4px 8px;border:1px solid var(--rule2);text-align:center">${pt}</td></tr>`).join("")}</table></div>`)}
+      ${rc('l3-g',7,`<div style="background:var(--slate-l);border-left:4px solid var(--slate);border-radius:0 8px 8px 0;padding:.45rem .85rem"><div style="font-size:18px;font-weight:700;color:var(--slate)">Coordinate rule? Domain and range?</div></div>`)}
+      ${rc('l3-g',8,`<div style="background:white;border:1.5px solid var(--rule2);border-radius:8px;padding:.45rem .85rem;margin-top:-.2rem"><div style="font-family:var(--mono);font-size:14px;color:var(--ink3);line-height:1.7">(x,y)→<span style="color:${FC.g};font-weight:700">(x, y+4)</span> · Range up 4 · domain same<br>📓 Sketch g(x) in green on your axes</div></div>`)}
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:center">
+        ${rc('l3-g',9,`<div class="plane-wrap">${notesPlane(380,420,[{yfn:x=>x*x-3,col:FC.f,label:'f(x)',dots:[[-2,1,'(−2,1)',-7,-8,'end'],[0,-3,'(0,−3)',6,13,'start'],[3,6,'(3,6)',6,-8,'start'],[2,1,'* (2,1)',7,-8,'start']]},{yfn:x=>x*x+1,col:FC.g,label:'g(x)',dots:[[-2,5,'(−2,5)',-6,-8,'end'],[0,1,'(0,1)',6,-8,'start'],[2,5,'* (2,5)',7,-8,'start']]}])}</div>`)}
+      </div>
+    </div>
+  </div>`);
+
+  add('consider-h','lesson','P2',`<div class="slide lesson-slide" data-id="consider-h">
+    <div class="period-tag">Period 2 — Transformation 2</div>
+    <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1.6rem;width:100%;max-width:820px;text-align:center">
+      <div style="display:flex;flex-direction:column;gap:.6rem;align-items:center">
+        <div style="font-family:var(--mono);font-size:26px;font-weight:600;color:var(--ink2)">You know that &nbsp;<span style="color:var(--slate);font-weight:700">f(x) = x² − 3</span></div><div style="font-family:var(--mono);font-size:28px;font-weight:700;color:var(--ink)">Now consider &nbsp;<span style="color:${FC.h};font-weight:700">h(x) = f(x − 2)</span></div>
+      </div>
+      <div style="font-family:var(--serif);font-size:clamp(32px,4.5vw,54px);font-weight:700;color:var(--ink);line-height:1.2">How does h(x) relate to f(x)?</div>
+      <div style="font-size:20px;color:var(--ink3);font-weight:500">📓 Write both in your notes. What do you think changes?</div>
+    </div>
+  </div>`);
+
+  // ── SLIDE 2: h(x) = f(x−2) ────────────────────────────────────────────
+  initReveal('l3-h',11);
+  add('l3-h','problem','P2',`<div class="slide lesson-slide" data-id="l3-h" style="padding:.8rem 1.2rem">
+    <div class="period-tag">Period 2 — Transformation 2: Horizontal Shift</div>
+    <div style="background:var(--teal-l);border:2px solid var(--teal);border-radius:10px;padding:.55rem 1.1rem;text-align:center;width:100%;max-width:1100px;margin-bottom:.4rem">
+      <div style="font-family:var(--mono);font-size:13px;font-weight:700;color:var(--teal);letter-spacing:.1em;text-transform:uppercase;margin-bottom:.2rem">Same strategy — one instance reveals the rule</div>
+      <div style="font-size:20px;font-weight:700;color:var(--teal)">Let's examine what happens in h(x) at x = 2.</div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1.1fr;gap:1.2rem;width:100%;max-width:1100px;align-items:start">
+      <div style="display:flex;flex-direction:column;gap:.4rem">
+        <button class="next-btn" id="rnext-l3-h" onclick="advanceReveal('l3-h')" style="align-self:flex-start;margin-bottom:.2rem">Show next →</button>
+        ${rc('l3-h',0,`<div style="background:var(--paper);border:1.5px solid var(--rule2);border-radius:8px;padding:.55rem .85rem"><div style="font-size:17px;font-weight:700;color:var(--ink)">Let's find h(2):</div><div style="font-size:22px;color:var(--ink);font-family:var(--mono);font-weight:700;margin-top:4px">h(2) = f(2 − 2) = f(0) = ?</div></div>`,false)}
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:.5rem;align-items:start">
+          <div style="display:flex;flex-direction:column;gap:.3rem">
+            <div class="fn-card" style="border-top:3px solid ${FC.f}"><div class="fn-eq" style="color:${FC.f};font-size:17px">f(x) = x² − 3</div></div>
+            ${rc('l3-h',1,chainStep('f(0) = ?','0²−3 = <strong>−3</strong>',FC.f))}
+          </div>
+          <div style="display:flex;flex-direction:column;gap:.3rem">
+            <div class="fn-card" style="border-top:3px solid ${FC.h}"><div class="fn-eq" style="color:${FC.h};font-size:17px">h(x) = f(x − 2)</div></div>
+            ${rc('l3-h',2,chainStep('h(2) =','f(0) = <strong>−3</strong>',FC.h))}
+            ${rc('l3-h',3,chainStep('point on h:','<strong>(2, −3)</strong>',FC.h))}
+          </div>
+        </div>
+        ${rc('l3-h',4,`<div style="background:var(--slate-l);border-left:4px solid var(--slate);border-radius:0 8px 8px 0;padding:.45rem .85rem"><div style="font-size:18px;font-weight:700;color:var(--slate)">Where was (2,−3) on f? What does this tell you?</div></div>`)}
+        ${rc('l3-h',5,`<div style="background:white;border:1.5px solid var(--rule2);border-radius:8px;padding:.45rem .85rem;margin-top:-.2rem"><div style="font-family:var(--mono);font-size:14px;color:var(--ink3);line-height:1.7">f had <span style="color:${FC.f};font-weight:700">(0, −3)</span>. h has <span style="color:${FC.h};font-weight:700">(2, −3)</span>.<br>Same y, x moved right 2. f's output at x=0 now appears at x=2.</div></div>`)}
+        ${rc('l3-h',6,`<div style="background:white;border:1.5px solid var(--rule2);border-radius:8px;padding:.45rem .85rem"><div class="fn-lbl">Three instances</div><table style="border-collapse:collapse;width:100%"><tr><th style="font-family:var(--mono);font-size:11px;padding:4px 6px;border:1px solid var(--rule2);background:var(--paper)">x</th><th style="font-family:var(--mono);font-size:11px;padding:4px 6px;border:1px solid var(--rule2);color:${FC.h};background:var(--paper)">x−2</th><th style="font-family:var(--mono);font-size:11px;padding:4px 6px;border:1px solid var(--rule2);color:${FC.f};background:var(--paper)">f(x−2)</th><th style="font-family:var(--mono);font-size:11px;padding:4px 6px;border:1px solid var(--rule2);color:${FC.h};background:var(--paper)">h(x)</th><th style="font-family:var(--mono);font-size:11px;padding:4px 6px;border:1px solid var(--rule2);background:var(--paper)">point</th></tr>${[[0,-2,1,1,'(0,1)'],[2,0,-3,-3,'(2,−3)'],[4,2,1,1,'(4,1)']].map(([x,xa,fx,hx,pt])=>`<tr><td style="font-family:var(--mono);font-size:12px;padding:4px 6px;border:1px solid var(--rule2);text-align:center">${x}</td><td style="font-family:var(--mono);font-size:12px;padding:4px 6px;border:1px solid var(--rule2);text-align:center;color:${FC.h}">${xa}</td><td style="font-family:var(--mono);font-size:12px;padding:4px 6px;border:1px solid var(--rule2);text-align:center;color:${FC.f}">${fx}</td><td style="font-family:var(--mono);font-size:12px;padding:4px 6px;border:1px solid var(--rule2);text-align:center;color:${FC.h}">${hx}</td><td style="font-family:var(--mono);font-size:12px;padding:4px 6px;border:1px solid var(--rule2);text-align:center">${pt}</td></tr>`).join('')}</table></div>`)}
+        ${rc('l3-h',7,`<div style="background:var(--slate-l);border-left:4px solid var(--slate);border-radius:0 8px 8px 0;padding:.45rem .85rem"><div style="font-size:18px;font-weight:700;color:var(--slate)">Why does subtracting 2 shift the graph RIGHT?</div></div>`)}
+        ${rc('l3-h',8,`<div style="background:white;border:1.5px solid var(--rule2);border-radius:8px;padding:.45rem .85rem;margin-top:-.2rem"><div style="font-family:var(--mono);font-size:14px;color:var(--ink3);line-height:1.7">f's output at x=0 now appears at x=2 on h, because h(2)=f(0).<br>Input reduced by 2 — graph slides right 2.</div></div>`)}
+        ${rc('l3-h',9,`<div style="background:white;border:1.5px solid var(--rule2);border-radius:8px;padding:.45rem .85rem"><div style="font-family:var(--mono);font-size:14px;color:var(--ink3);line-height:1.7">(x,y)→<span style="color:${FC.h};font-weight:700">(x+2, y)</span> · Domain shifts right 2 · range same<br>📓 Sketch h(x) in rose on your axes</div></div>`)}
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:center">
+        ${rc('l3-h',10,`<div class="plane-wrap">${notesPlane(380,420,[{yfn:x=>x*x-3,col:FC.f,label:'f(x)',dots:[[-2,1,'(−2,1)',-7,-8,'end'],[3,6,'(3,6)',6,-8,'start'],[2,1,'(2,1)',7,-8,'start'],[0,-3,'* (0,−3)',7,13,'start']]},{yfn:x=>(x-2)*(x-2)-3,col:FC.h,label:'h(x)',dots:[[4,1,'(4,1)',6,-8,'start'],[0,1,'(0,1)',-6,-8,'end'],[2,-3,'* (2,−3)',7,-8,'start']]}])}</div>`)}
+      </div>
+    </div>
+  </div>`);
+
+  add('consider-j','lesson','P2',`<div class="slide lesson-slide" data-id="consider-j">
+    <div class="period-tag">Period 2 — Transformation 3</div>
+    <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1.6rem;width:100%;max-width:820px;text-align:center">
+      <div style="display:flex;flex-direction:column;gap:.6rem;align-items:center">
+        <div style="font-family:var(--mono);font-size:26px;font-weight:600;color:var(--ink2)">You know that &nbsp;<span style="color:var(--slate);font-weight:700">f(x) = x² − 3</span></div><div style="font-family:var(--mono);font-size:28px;font-weight:700;color:var(--ink)">Now consider &nbsp;<span style="color:${FC.j};font-weight:700">j(x) = −f(x)</span></div>
+      </div>
+      <div style="font-family:var(--serif);font-size:clamp(32px,4.5vw,54px);font-weight:700;color:var(--ink);line-height:1.2">How does j(x) relate to f(x)?</div>
+      <div style="font-size:20px;color:var(--ink3);font-weight:500">📓 Write both in your notes. What do you think changes?</div>
+    </div>
+  </div>`);
+
+  // ── SLIDE 3: j(x) = −f(x) ─────────────────────────────────────────────
+  initReveal('l3-j',10);
+  add('l3-j','problem','P2',`<div class="slide lesson-slide" data-id="l3-j" style="padding:.8rem 1.2rem">
+    <div class="period-tag">Period 2 — Transformation 3: Reflection</div>
+    <div style="background:var(--teal-l);border:2px solid var(--teal);border-radius:10px;padding:.55rem 1.1rem;text-align:center;width:100%;max-width:1100px;margin-bottom:.4rem">
+      <div style="font-family:var(--mono);font-size:13px;font-weight:700;color:var(--teal);letter-spacing:.1em;text-transform:uppercase;margin-bottom:.2rem">One instance → the rule</div>
+      <div style="font-size:20px;font-weight:700;color:var(--teal)">Find j(2). Compare to f(2).</div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1.1fr;gap:1.2rem;width:100%;max-width:1100px;align-items:start">
+      <div style="display:flex;flex-direction:column;gap:.4rem">
+        <button class="next-btn" id="rnext-l3-j" onclick="advanceReveal('l3-j')" style="align-self:flex-start;margin-bottom:.2rem">Show next →</button>
+        ${rc('l3-j',0,`<div style="background:var(--paper);border:1.5px solid var(--rule2);border-radius:8px;padding:.55rem .85rem"><div style="font-size:17px;font-weight:700;color:var(--ink)">Let's find j(2):</div><div style="font-size:22px;color:var(--ink);font-family:var(--mono);font-weight:700;margin-top:4px">j(2) = −f(2) = ?</div></div>`,false)}
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:.5rem;align-items:start">
+          <div style="display:flex;flex-direction:column;gap:.3rem">
+            <div class="fn-card" style="border-top:3px solid ${FC.f}"><div class="fn-eq" style="color:${FC.f};font-size:17px">f(x) = x² − 3</div></div>
+            ${rc('l3-j',1,chainStep('f(2) = ?','2²−3 = <strong>1</strong>',FC.f))}
+          </div>
+          <div style="display:flex;flex-direction:column;gap:.3rem">
+            <div class="fn-card" style="border-top:3px solid ${FC.j}"><div class="fn-eq" style="color:${FC.j};font-size:17px">j(x) = −f(x)</div></div>
+            ${rc('l3-j',2,chainStep('j(2) =','−f(2) = −1 = <strong>−1</strong>',FC.j))}
+            ${rc('l3-j',3,chainStep('point on j:','<strong>(2, −1)</strong>',FC.j))}
+          </div>
+        </div>
+        ${rc('l3-j',4,`<div style="background:var(--slate-l);border-left:4px solid var(--slate);border-radius:0 8px 8px 0;padding:.45rem .85rem"><div style="font-size:18px;font-weight:700;color:var(--slate)">Where was (2,−1) on f? What changed?</div></div>`)}
+        ${rc('l3-j',5,`<div style="background:white;border:1.5px solid var(--rule2);border-radius:8px;padding:.45rem .85rem;margin-top:-.2rem"><div style="font-family:var(--mono);font-size:14px;color:var(--ink3);line-height:1.7">f had <span style="color:${FC.f};font-weight:700">(2, 1)</span>. j has <span style="color:${FC.j};font-weight:700">(2, −1)</span>.<br>Same x, y flipped sign. X-intercepts don't move (−0=0).</div></div>`)}
+        ${rc('l3-j',6,`<div style="background:var(--slate-l);border-left:4px solid var(--slate);border-radius:0 8px 8px 0;padding:.45rem .85rem"><div style="font-size:18px;font-weight:700;color:var(--slate)">What changed about the range? Domain?</div></div>`)}
+        ${rc('l3-j',7,`<div style="background:white;border:1.5px solid var(--rule2);border-radius:8px;padding:.45rem .85rem;margin-top:-.2rem"><div style="font-family:var(--mono);font-size:14px;color:var(--ink3);line-height:1.7">(x,y)→<span style="color:${FC.j};font-weight:700">(x,−y)</span> · Range flips: y≤3 · domain same<br>📓 Sketch j(x) in orange. New set of axes.</div></div>`)}
+        ${rc('l3-j',8,`<div style="background:white;border:1.5px solid var(--rule2);border-radius:8px;padding:.45rem .85rem"><div style="font-family:var(--mono);font-size:14px;color:var(--ink3);line-height:1.7">Table: (−2,1)→(−2,−1) · (0,−3)→(0,3) · (2,1)→(2,−1)</div></div>`)}
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:center">
+        ${rc('l3-j',9,`<div class="plane-wrap">${notesPlane(380,420,[{yfn:x=>x*x-3,col:FC.f,label:'f(x)',dots:[[-2,1,'(−2,1)',-7,-8,'end'],[0,-3,'(0,−3)',6,13,'start'],[3,6,'(3,6)',6,-8,'start'],[2,1,'* (2,1)',7,-8,'start']]},{yfn:x=>-(x*x-3),col:FC.j,label:'j(x)',dots:[[0,3,'(0,3)',6,-8,'start'],[-2,-1,'(−2,−1)',-6,-8,'end'],[2,-1,'* (2,−1)',7,-8,'start']]}])}</div>`)}
+      </div>
+    </div>
+  </div>`);
+
+  add('consider-k','lesson','P2',`<div class="slide lesson-slide" data-id="consider-k">
+    <div class="period-tag">Period 2 — Transformation 4</div>
+    <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1.6rem;width:100%;max-width:820px;text-align:center">
+      <div style="display:flex;flex-direction:column;gap:.6rem;align-items:center">
+        <div style="font-family:var(--mono);font-size:26px;font-weight:600;color:var(--ink2)">You know that &nbsp;<span style="color:var(--slate);font-weight:700">f(x) = x² − 3</span></div><div style="font-family:var(--mono);font-size:28px;font-weight:700;color:var(--ink)">Now consider &nbsp;<span style="color:${FC.k};font-weight:700">k(x) = 2 · f(x)</span></div>
+      </div>
+      <div style="font-family:var(--serif);font-size:clamp(32px,4.5vw,54px);font-weight:700;color:var(--ink);line-height:1.2">How does k(x) relate to f(x)?</div>
+      <div style="font-size:20px;color:var(--ink3);font-weight:500">📓 Write both in your notes. What do you think changes?</div>
+    </div>
+  </div>`);
+
+  // ── SLIDE 4: k(x) = 2f(x) ─────────────────────────────────────────────
+  initReveal('l3-k',12);
+  add('l3-k','problem','P2',`<div class="slide lesson-slide" data-id="l3-k" style="padding:.8rem 1.2rem">
+    <div class="period-tag">Period 2 — Transformation 4: Vertical Stretch</div>
+    <div style="background:var(--teal-l);border:2px solid var(--teal);border-radius:10px;padding:.55rem 1.1rem;text-align:center;width:100%;max-width:1100px;margin-bottom:.4rem">
+      <div style="font-family:var(--mono);font-size:13px;font-weight:700;color:var(--teal);letter-spacing:.1em;text-transform:uppercase;margin-bottom:.2rem">One instance → the rule</div>
+      <div style="font-size:20px;font-weight:700;color:var(--teal)">Find k(0). The vertex will show the stretch most clearly.</div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1.1fr;gap:1.2rem;width:100%;max-width:1100px;align-items:start">
+      <div style="display:flex;flex-direction:column;gap:.4rem">
+        <button class="next-btn" id="rnext-l3-k" onclick="advanceReveal('l3-k')" style="align-self:flex-start;margin-bottom:.2rem">Show next →</button>
+        ${rc('l3-k',0,`<div style="background:var(--paper);border:1.5px solid var(--rule2);border-radius:8px;padding:.55rem .85rem"><div style="font-size:17px;font-weight:700;color:var(--ink)">Let's find k(0) — the vertex:</div><div style="font-size:22px;color:var(--ink);font-family:var(--mono);font-weight:700;margin-top:4px">k(0) = 2 · f(0) = ?</div></div>`,false)}
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:.5rem;align-items:start">
+          <div style="display:flex;flex-direction:column;gap:.3rem">
+            <div class="fn-card" style="border-top:3px solid ${FC.f}"><div class="fn-eq" style="color:${FC.f};font-size:17px">f(x) = x² − 3</div></div>
+            ${rc('l3-k',1,chainStep('f(2) = ?','2²−3 = <strong>1</strong>',FC.f))}
+          </div>
+          <div style="display:flex;flex-direction:column;gap:.3rem">
+            <div class="fn-card" style="border-top:3px solid ${FC.k}"><div class="fn-eq" style="color:${FC.k};font-size:17px">k(x) = 2 · f(x)</div></div>
+            ${rc('l3-k',2,chainStep('k(2) =','2 · f(2) = 2 · 1 = <strong>2</strong>',FC.k))}
+            ${rc('l3-k',3,chainStep('point on k:','<strong>(2, 2)</strong>',FC.k))}
+          </div>
+        </div>
+        ${rc('l3-k',4,`<div style="background:var(--slate-l);border-left:4px solid var(--slate);border-radius:0 8px 8px 0;padding:.45rem .85rem"><div style="font-size:18px;font-weight:700;color:var(--slate)">Where was (2,2) on f? What changed?</div></div>`)}
+        ${rc('l3-k',5,`<div style="background:white;border:1.5px solid var(--rule2);border-radius:8px;padding:.45rem .85rem;margin-top:-.2rem"><div style="font-family:var(--mono);font-size:14px;color:var(--ink3);line-height:1.7">f had <span style="color:${FC.f};font-weight:700">(2, 1)</span>. k has <span style="color:${FC.k};font-weight:700">(2, 2)</span>. Same x, y doubled.<br>Vertex: (0,−3)→(0,−6). X-intercepts stay (2·0=0).</div></div>`)}
+        ${rc('l3-k',6,`<div style="background:white;border:1.5px solid var(--rule2);border-radius:8px;padding:.45rem .85rem"><div class="fn-lbl">Stretch vs compress</div><table style="border-collapse:collapse;width:100%"><tr><th style="font-family:var(--mono);font-size:11px;padding:4px 7px;border:1px solid var(--rule2);background:var(--paper)">x</th><th style="font-family:var(--mono);font-size:11px;padding:4px 7px;border:1px solid var(--rule2);color:${FC.f};background:var(--paper)">f(x)</th><th style="font-family:var(--mono);font-size:11px;padding:4px 7px;border:1px solid var(--rule2);color:${FC.k};background:var(--paper)">2f(x)</th><th style="font-family:var(--mono);font-size:11px;padding:4px 7px;border:1px solid var(--rule2);color:#888;background:var(--paper)">½f(x)</th></tr>${[[-2,1,2,0.5],[0,-3,-6,-1.5],[2,1,2,0.5]].map(([x,fx,kx,hx])=>`<tr><td style="font-family:var(--mono);font-size:12px;padding:4px 7px;border:1px solid var(--rule2);text-align:center">${x}</td><td style="font-family:var(--mono);font-size:12px;padding:4px 7px;border:1px solid var(--rule2);text-align:center;color:${FC.f}">${fx}</td><td style="font-family:var(--mono);font-size:12px;padding:4px 7px;border:1px solid var(--rule2);text-align:center;color:${FC.k}">${kx}</td><td style="font-family:var(--mono);font-size:12px;padding:4px 7px;border:1px solid var(--rule2);text-align:center;color:#888">${hx}</td></tr>`).join('')}</table></div>`)}
+        ${rc('l3-k',7,`<div style="background:var(--slate-l);border-left:4px solid var(--slate);border-radius:0 8px 8px 0;padding:.45rem .85rem"><div style="font-size:18px;font-weight:700;color:var(--slate)">Narrower or wider than f — why?</div></div>`)}
+        ${rc('l3-k',8,`<div style="background:white;border:1.5px solid var(--rule2);border-radius:8px;padding:.45rem .85rem;margin-top:-.2rem"><div style="font-family:var(--mono);font-size:14px;color:var(--ink3);line-height:1.7">k is <strong>narrower</strong> — y-values grow faster from vertex. ½f is wider.<br>(x,y)→<span style="color:${FC.k};font-weight:700">(x, 2y)</span> · Range: y≥−6</div></div>`)}
+        ${rc('l3-k',9,`<div style="background:white;border:1.5px solid var(--rule2);border-radius:8px;padding:.45rem .85rem"><div style="font-family:var(--mono);font-size:14px;color:var(--ink3)">📓 Sketch k(x) in purple on same axes as j(x).</div></div>`)}
+        ${rc('l3-k',10,`<div style="background:white;border:1.5px solid var(--rule2);border-radius:8px;padding:.45rem .85rem;margin-top:-.2rem"><div style="font-family:var(--mono);font-size:13px;color:var(--ink3)">Also consider: what does ½f(x) look like? Same x-intercepts, but wider. Range: y≥−1.5</div></div>`)}
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:center">
+        ${rc('l3-k',11,`<div class="plane-wrap">${notesPlane(380,420,[{yfn:x=>x*x-3,col:FC.f,label:'f(x)',dots:[[-2,1,'(−2,1)',-7,-8,'end'],[3,6,'(3,6)',6,-8,'start'],[2,1,'(2,1)',7,-8,'start'],[0,-3,'* (0,−3)',8,13,'start']]},{yfn:x=>2*(x*x-3),col:FC.k,label:'k(x)',dots:[[-2,2,'(−2,2)',-6,-8,'end'],[2,2,'(2,2)',7,-8,'start'],[0,-6,'* (0,−6)',8,-9,'start']]}])}</div>`)}
+      </div>
+    </div>
+  </div>`);
+
+  // ── SLIDE 5: Synthesis — visual sequence ─────────────────────────────
+  initReveal('l3-synth',7);
+
+  // Build four small planes showing progressive layering
+  const SPW=210,SPH=230;
+  const synthF   = [{yfn:x=>x*x-3,        col:FC.f,   label:'f(x)'}];
+  const synth2f  = [{yfn:x=>x*x-3,        col:FC.f,   label:'f(x)',dashed:true},
+                    {yfn:x=>2*(x*x-3),     col:FC.k,   label:'2f(x)'}];
+  const synthn2f = [{yfn:x=>x*x-3,        col:FC.f,   label:'f(x)',dashed:true},
+                    {yfn:x=>2*(x*x-3),     col:FC.k,   label:'2f(x)',dashed:true},
+                    {yfn:x=>-2*(x*x-3),    col:FC.j,   label:'−2f(x)'}];
+  const synthp   = [{yfn:x=>-2*(x*x-3),   col:FC.j,   label:'−2f(x)',dashed:true},
+                    {yfn:x=>-2*(x-1)*(x-1)+10, col:'#b03a5b', label:'p(x)'}];
+
+  add('l3-synth','problem','P2',`<div class="slide lesson-slide" data-id="l3-synth">
+    <div class="period-tag">Period 2 — Synthesis: Layer by Layer</div>
+    <div style="background:var(--amber-l);border:2px solid var(--amber);border-radius:10px;padding:.65rem 1.2rem;text-align:center;width:100%;max-width:980px;margin-bottom:.6rem">
+      <div style="font-size:17px;font-weight:700;color:var(--amber)">p(x) = −2 · f(x − 1) + 4</div>
+      <div style="font-size:14px;color:var(--ink);margin-top:.3rem;line-height:1.7">
+        <span style="color:var(--rose);font-weight:700">①</span> Reflect + stretch: multiply by −2 &nbsp;
+        <span style="color:var(--slate);font-weight:700">②</span> Shift right 1 &nbsp;
+        <span style="color:var(--teal);font-weight:700">③</span> Shift up 4
+      </div>
+    </div>
+    <div style="display:flex;align-items:center;justify-content:center;margin-bottom:.5rem">
+      <button class="next-btn" id="rnext-l3-synth" onclick="advanceReveal('l3-synth')">Show next step →</button>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:.8rem;width:100%;max-width:980px">
+      <div style="display:flex;flex-direction:column;align-items:center;gap:.3rem">
+        <div style="font-family:var(--mono);font-size:12px;font-weight:700;color:${FC.f}">Step 0</div>
+        <div style="font-size:13px;color:var(--ink2);font-weight:600;text-align:center">Start with f(x)</div>
+        <div class="plane-wrap">${notesPlane(SPW,SPH,synthF)}</div>
+      </div>
+      ${rc('l3-synth',0,`<div style="display:flex;flex-direction:column;align-items:center;gap:.3rem">
+        <div style="font-family:var(--mono);font-size:12px;font-weight:700;color:${FC.k}">Step 1</div>
+        <div style="font-size:13px;color:var(--ink2);font-weight:600;text-align:center">Stretch ×2</div>
+        <div class="plane-wrap">${notesPlane(SPW,SPH,synth2f)}</div>
+        <div style="font-size:11px;color:var(--ink3);text-align:center">outputs double<br>vertex: (0,−3)→(0,−6)</div>
+      </div>`,false)}
+      ${rc('l3-synth',1,`<div style="display:flex;flex-direction:column;align-items:center;gap:.3rem">
+        <div style="font-family:var(--mono);font-size:12px;font-weight:700;color:${FC.j}">Step 2</div>
+        <div style="font-size:13px;color:var(--ink2);font-weight:600;text-align:center">Negate (reflect)</div>
+        <div class="plane-wrap">${notesPlane(SPW,SPH,synthn2f)}</div>
+        <div style="font-size:11px;color:var(--ink3);text-align:center">outputs flip sign<br>vertex: (0,−6)→(0,6)</div>
+      </div>`)}
+      ${rc('l3-synth',2,`<div style="display:flex;flex-direction:column;align-items:center;gap:.3rem">
+        <div style="font-family:var(--mono);font-size:12px;font-weight:700;color:#b03a5b">Steps 3+4</div>
+        <div style="font-size:13px;color:var(--ink2);font-weight:600;text-align:center">Translate</div>
+        <div class="plane-wrap">${notesPlane(SPW,SPH,synthp)}</div>
+        <div style="font-size:11px;color:var(--ink3);text-align:center">right 1, up 4<br>vertex: (0,6)→(1,10)</div>
+      </div>`)}
+    </div>
+    <div style="width:100%;max-width:980px;margin-top:.5rem;display:flex;flex-direction:column;gap:.4rem">
+      ${rc('l3-synth',3,`<div style="background:var(--slate-l);border-left:4px solid var(--slate);border-radius:0 8px 8px 0;padding:.55rem .9rem"><div style="font-size:15px;font-weight:600;color:var(--slate)">What is the vertex of p(x)? How do you know without calculating?</div></div>`)}
+      ${rc('l3-synth',4,`<div style="background:white;border:1.5px solid var(--rule2);border-radius:8px;padding:.55rem .9rem;margin-top:-.2rem"><div style="font-family:var(--mono);font-size:13px;color:var(--ink3);line-height:1.7">Vertex of f is (0,−3). Trace it: ①×−2 → (0,6). ②shift right 1 → (1,6). ③+4 → <span style="color:#b03a5b;font-weight:700">(1, 10)</span>.<br>Each step moves the anchor point predictably.</div></div>`)}
+      ${rc('l3-synth',5,`<div style="background:var(--teal-l);border:2px solid var(--teal);border-radius:10px;padding:.9rem 1.2rem;text-align:center">
+          <div style="font-size:22px;font-weight:700;color:var(--teal);line-height:1.4;margin-bottom:.4rem">We used one point each time.<br>The rule applies to every point.</div>
+          <div style="font-size:16px;color:var(--ink2);line-height:1.6">That's what makes it a <strong>transformation</strong> — not just moving one point,<br>but moving <em>all of them the same way</em>.</div>
+        </div>`)}
+        ${rc('l3-synth',6,`<div class="rule-box" style="font-size:14px">Always: stretch/reflect first (anchor stays at origin) → translate last (anchor moves to final position).<br>📓 Sketch p(x). Verify vertex at (1,10).</div>`)}
+    </div>
+  </div>`);
 
   // HW 2
   add('hw2','hw','P2',`<div class="slide hw-slide" data-id="hw2">
@@ -931,18 +1262,20 @@ function buildSlides(){
       <div class="hw-num">Problem 2)</div>
       <div class="hw-problem" style="display:grid;grid-template-columns:1fr auto;gap:1rem;align-items:start">
         <div>
-          The graph of f(x) is shown — a piecewise function through the points:<br>
+          The graph of f(x) is shown — a piecewise function through:<br>
           <span class="hw-eq">(−2,−2) · (0,2) · (3,0) · (4,4)</span>
+          Work with all three functions on the same set of axes.
         </div>
         <div style="background:white;border:1.5px solid var(--rule2);border-radius:7px;padding:.3rem;flex-shrink:0">${hw2Graph()}</div>
       </div>
       <div class="hw-prompts">
-        <div class="hw-p"><span class="plbl">A)</span>Copy f(x) onto your axes. Then graph g(x) = ½f(x) on the same axes. Label both curves with their equations. Show the four labeled points on g.</div>
-        <div class="hw-p"><span class="plbl">B)</span>On the same axes, also graph h(x) = −f(x). Label it. Show the four labeled points on h.</div>
-        <div class="hw-p"><span class="plbl">C)</span>Look at your three graphs. Which points did NOT change position under either transformation — and why? What is special about those points?</div>
-        <div class="hw-p"><span class="plbl">D)</span>What transformation on f(x) would produce a graph with 3 zeros instead of 2? Describe the transformation and explain your reasoning.</div>
+        <div class="hw-p"><span class="plbl">A)</span>Copy f(x) onto your axes. Then graph g(x) = ½ · f(x) in a second color. Label both curves and show the four key points on g.</div>
+        <div class="hw-p"><span class="plbl">B)</span>Now add h(x) = −½ · f(x) to the same axes in a third color. We took g(x) and negated it — just changed the sign. Describe what that did to the graph. Where did each of the four points on g land on h?</div>
+        <div class="hw-p"><span class="plbl">C)</span>Which points didn't change position under either transformation — and why? What is special about those points?</div>
+        <div class="hw-p"><span class="plbl">D)</span>If h(x) = (x − 2)² − 1, how does h compare to g? What transformation maps g to h? Sketch both and explain. — OR — <em>Can you write a transformation that shifts all of f's points right 3 and down 2? Write it in function notation.</em> — OR — write a genuine question you have.</div>
+        <div class="hw-p"><span class="plbl">E)</span>State the domain and range of f(x). Then for each of g(x) and h(x): did the domain change? Did the range change? Explain why or why not for each.</div>
       </div>
-      <div class="hw-note">Bring your notebook — we'll start with the explanation question.</div>
+      <div class="hw-note">Bring your notebook — we'll start with the domain and range question.</div>
     </div>
   </div>`);
 
@@ -1017,7 +1350,7 @@ function buildSlides(){
       <div style="display:flex;flex-direction:column;align-items:center;gap:.4rem">
         <div style="font-size:17px;font-weight:700;color:var(--ink2)">f(x) — labeled points</div>
         <div style="font-size:14px;color:var(--teal);font-weight:600">Find x = 3. Read the y-value up.</div>
-        <div class="plane-wrap">${stdPlane(270,280,-4,9,(cx,cy,sx,sy)=>gMystery(cx,cy,sx,sy,'#2a4a7f','f(x)',true))}</div>
+        <div class="plane-wrap">${stdPlane(320,340,-4,9,(cx,cy,sx,sy)=>gMystery(cx,cy,sx,sy,'#2a4a7f','f(x)',true))}</div>
       </div>
     </div>
   </div>`);
@@ -1182,29 +1515,34 @@ function buildSlides(){
       <div style="display:flex;flex-direction:column;gap:.75rem">
         <div class="fn-card">
           <div class="fn-lbl">Given</div>
-          <div class="fn-eq" style="color:var(--slate);font-size:16px">y = k(x + 3)² + 35</div>
+          <div class="fn-eq" style="color:var(--slate);font-size:18px">y = k(x − 2)² + 8</div>
         </div>
         <div class="fn-card" style="border-top:3px solid var(--orange)">
           <div class="fn-lbl">The condition</div>
-          <div class="fn-eq" style="color:var(--orange);font-size:16px">passes through (1, 11)</div>
+          <div class="fn-eq" style="color:var(--orange);font-size:18px">passes through (4, −4)</div>
         </div>
-        <div class="sketch-note">📐 Sketch what you know — vertex at (−3, 35), opens up or down depending on k. Then use the point.</div>
+        <div class="sketch-note">📐 On your board: mark the vertex and the point (4, −4). Sketch f(x) and g(x). Then answer A, B, and C.</div>
       </div>
       <div style="display:flex;flex-direction:column;gap:.7rem">
         <div class="prompt-card">
           <div class="prompt-lbl">Work through it</div>
-          <div class="prompt-q"><span class="qlbl">A)</span>"Passes through (1, 11)" tells you two specific values. What are they — and what do they let you do?</div>
-          <div class="prompt-q"><span class="qlbl">B)</span>Substitute both values into the equation. What does it simplify to? Solve for k.</div>
-          <div class="prompt-q" style="border-left-color:var(--orange)"><span class="qlbl" style="color:var(--orange)">C)</span>What does your value of k tell you about whether this parabola is <em>narrower or wider</em> than the parent function y = x²? How does k control that — and why?</div>
+          <div class="prompt-q"><span class="qlbl">A)</span>"Passes through (4, −4)" tells you two specific values. What are they — and what do they let you do?</div>
+          <div class="prompt-q"><span class="qlbl">B)</span>Substitute both values into the equation. Simplify and solve for k. Show every step.</div>
+          <div class="prompt-q" style="border-left-color:var(--orange)"><span class="qlbl" style="color:var(--orange)">C)</span>What does your value of k tell you about whether this parabola is narrower or wider than the parent function y = x²? How does k control that — and why?</div>
         </div>
         <div class="ans-box" id="ans-p3t3">
           <div class="ans-lbl">Answer</div>
-          <div class="ans-text"><strong>A)</strong> "Passes through (1,11)" means x=1, y=11. Substitute both.<br><strong>B)</strong> 11=k(16)+35 → −24=16k → <span class="c">k = −1.5</span><br><strong>C)</strong> |k|=1.5 > 1 → parabola is <span class="c">narrower</span> than y=x². k multiplies every output, so y-values grow faster → the curve rises more steeply from the vertex → visually narrower. If |k|&lt;1 it would be wider.</div>
+          <div class="ans-text">
+            <strong>A)</strong> x = 4, y = −4. Substitute both into the equation.<br>
+            <strong>B)</strong> −4 = k(4−2)² + 8 → −4 = 4k + 8 → −12 = 4k → <span class="c">k = −3</span><br>
+            <strong>C)</strong> |k| = 3 > 1 → parabola is <span class="c">narrower</span> than y = x². Each output is multiplied by 3, so y-values grow 3× faster from the vertex → steeper arms → visually narrower. k negative → opens downward.
+          </div>
         </div>
         <button class="rev-btn ans" onclick="showAns('ans-p3t3')">Show answer ▶</button>
       </div>
     </div>
   </div>`);
+
 
   // HW 3  // HW 3
   add('hw3','hw','P3',`<div class="slide hw-slide" data-id="hw3">
